@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <configure
+        xmlns="http://namespaces.zope.org/zope"
+        xmlns:browser="http://namespaces.zope.org/browser"
+        xmlns:zcml="http://namespaces.zope.org/zcml">
+        <configure zcml:condition="installed Products.Zuul">
+
+            <include package="Products.ZenUtils.extdirect.zope" file="meta.zcml"/>
+
+
+            <!-- ZenPack Info -->
+
+            <browser:directRouter
+                name="zenHPUX_router"
+                for="*"
+                class="ZenPacks.community.zenHPUX.routers.zenHPUXRouter"
+                namespace="Zenoss.remote"
+                permission="zenoss.View"
+            />
+    
+            <adapter
+                name="zenHPUXAdapter"
+                provides="ZenPacks.community.zenHPUX.interfaces.IzenHPUXFacade"
+                for="*"
+                factory="ZenPacks.community.zenHPUX.facades.zenHPUXFacade"
+            />
+                
+            <browser:resourceDirectory
+                    name="zenHPUX"
+                    directory="resources"
+            />
+
+            <!-- Component Info -->
+            <adapter factory="ZenPacks.community.zenHPUX.info.HPUXProcessInfo"
+                for="ZenPacks.community.zenHPUX.HPUXProcess.HPUXProcess"
+                provides="ZenPacks.community.zenHPUX.interfaces.IHPUXProcessInfo"
+            />
+    
+            <browser:viewlet
+                name="js-HPUXProcess"
+                paths="/++resource++zenHPUX/hpuxprocess.js"
+                weight="10"
+                manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"
+                class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"
+                permission="zope2.Public"
+            />
+
+            <utility provides="zope.schema.interfaces.IVocabularyFactory"
+                component=".info.HPUXProcessgetEventClassesVocabulary"
+                name="HPUXProcessgetEventClasses"
+            />
+
+        </configure>
+    </configure>
+
